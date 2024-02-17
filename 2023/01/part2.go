@@ -52,7 +52,6 @@ func part2() error {
 
 func findCalibrationValuesInString2(s string) int {
 	first := findFirstNumberInString(s, false)
-
 	last := findFirstNumberInString(reverseString(s), true)
 
 	calibrationNumber := first*10 + last
@@ -107,7 +106,7 @@ func findFirstNumberInString(s string, reversed bool) int {
 		}
 	}
 
-	return -1
+	return 0
 }
 
 func reverseString(s string) string {
