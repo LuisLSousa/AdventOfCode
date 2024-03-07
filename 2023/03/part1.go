@@ -32,18 +32,19 @@ func part1() error {
 		}
 	}
 
+	// partNumberCoordinates stores all the coordinates with numbers on them next to characters
 	partNumberCoordinates := make(map[coordinates]struct{})
 	for _, c := range characterPositions {
-
 		// merge the maps
 		for k, v := range findPartNumberCoordinates(grid, c.x, c.y) {
 			partNumberCoordinates[k] = v
 		}
 	}
 
-	// iterate over entire list again, for each number found that has coordinates in partNumbersCoordinates, sum it
 	var sum, currentNumber int
+	// isAdjacent identifies numbers that are next to symbols
 	var isAdjacent bool
+	// iterate over entire list again, and for each number found that has coordinates in partNumbersCoordinates, sum it
 	for y, s := range strings.Fields(string(input)) {
 		for x, r := range s {
 			if _, ok := partNumberCoordinates[coordinates{x: x, y: y}]; ok {
@@ -52,17 +53,13 @@ func part1() error {
 
 			if unicode.IsDigit(r) {
 				currentNumber = combineNumbers(currentNumber, int(r-'0'))
-				fmt.Println(currentNumber)
-
 			} else if !isAdjacent { // not a digit and is not adjacent
 				currentNumber = 0
-
 			} else { // not a digit and isAdjacent
 				sum += currentNumber
 				currentNumber = 0
 				isAdjacent = false
 			}
-
 		}
 	}
 
