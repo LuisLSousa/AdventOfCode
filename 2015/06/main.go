@@ -20,6 +20,11 @@ type coordinates struct {
 	x, y int
 }
 
+type light struct {
+	lit        bool
+	brightness int
+}
+
 const inputFileName = "input.txt"
 
 func main() {
@@ -29,7 +34,7 @@ func main() {
 	scanner := bufio.NewScanner(file)
 
 	// grid holds our lights and a bool stating if they are on (true) or off (false)
-	grid := make(map[coordinates]bool)
+	grid := make(map[coordinates]light)
 
 	for scanner.Scan() {
 		splitString := strings.Split(scanner.Text(), " ")
@@ -48,13 +53,16 @@ func main() {
 		}
 	}
 
-	var numLitLights int
+	var part1, part2 int
 	for _, v := range grid {
-		if v {
-			numLitLights++
+		if v.lit {
+			part1++
 		}
+		part2 += v.brightness
 	}
-	fmt.Println("Number of lit lights: ", numLitLights)
+
+	fmt.Println("Part 1: ", part1)
+	fmt.Println("Part 2: ", part2)
 }
 
 func processCoordinates(s string) coordinates {
@@ -70,7 +78,7 @@ func processCoordinates(s string) coordinates {
 	}
 }
 
-func processCommand(grid map[coordinates]bool, s string, from, to coordinates) map[coordinates]bool {
+func processCommand(grid map[coordinates]light, s string, from, to coordinates) map[coordinates]light {
 	switch command(s) {
 	case toggle:
 		grid = toggleLights(grid, from, to)
@@ -85,13 +93,13 @@ func processCommand(grid map[coordinates]bool, s string, from, to coordinates) m
 	return grid
 }
 
-func toggleLights(grid map[coordinates]bool, from, to coordinates) map[coordinates]bool {
+func toggleLights(grid map[coordinates]light, from, to coordinates) map[coordinates]light {
 	for x := from.x; x <= to.x; x++ {
 		for y := from.y; y <= to.y; y++ {
 			if v, ok := grid[coordinates{x, y}]; ok {
-				grid[coordinates{x, y}] = !v
+				grid[coordinates{x, y}] = light{!v.lit, v.brightness + 2}
 			} else {
-				grid[coordinates{x, y}] = true
+				grid[coordinates{x, y}] = light{true, 2}
 			}
 		}
 	}
@@ -99,19 +107,31 @@ func toggleLights(grid map[coordinates]bool, from, to coordinates) map[coordinat
 
 }
 
-func turnOnLights(grid map[coordinates]bool, from, to coordinates) map[coordinates]bool {
+func turnOnLights(grid map[coordinates]light, from, to coordinates) map[coordinates]light {
 	for x := from.x; x <= to.x; x++ {
 		for y := from.y; y <= to.y; y++ {
-			grid[coordinates{x, y}] = true
+			if v, ok := grid[coordinates{x, y}]; ok {
+				grid[coordinates{x, y}] = light{true, v.brightness + 1}
+			} else {
+				grid[coordinates{x, y}] = light{true, 1}
+			}
 		}
 	}
 	return grid
 }
 
-func turnOffLights(grid map[coordinates]bool, from, to coordinates) map[coordinates]bool {
+func turnOffLights(grid map[coordinates]light, from, to coordinates) map[coordinates]light {
 	for x := from.x; x <= to.x; x++ {
 		for y := from.y; y <= to.y; y++ {
-			grid[coordinates{x, y}] = false
+			if v, ok := grid[coordinates{x, y}]; ok {
+				brightness := v.brightness - 1
+				if brightness < 0 {
+					brightness = 0
+				}
+				grid[coordinates{x, y}] = light{false, brightness}
+			} else {
+				grid[coordinates{x, y}] = light{false, 0}
+			}
 		}
 	}
 	return grid
