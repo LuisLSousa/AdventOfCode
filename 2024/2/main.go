@@ -50,6 +50,8 @@ func main() {
 			part1Sum++
 		}
 
+		// for each report, create all possible subreports without one of the numbers and run part 1 on the subreport
+		// if any of them isSafe, immediately increment part2Sum and break (so we don't get multiple safe counts for a single report)
 		for i := range report {
 			newReport := append([]string{}, report[:i]...)
 			newReport = append(newReport, report[i+1:]...)
