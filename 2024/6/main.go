@@ -14,6 +14,25 @@ type coordinates struct {
 	x, y int
 }
 
+/*
+	Future Tip: instead of keeping track of the board state, it might be easier to simply track the position and visited places using complex numbers
+
+	type seen map[complex128]struct{}
+
+	s := make(seen)
+
+	pos := 1 + 2i // real number for "x", imaginary number for "y"
+
+	seen[pos] = struct{}{}
+
+	// to change direction, simply multiply by i or -i
+
+	pos *= i // rotate right
+	pos *= -i // rotate left
+
+
+*/
+
 type board map[coordinates]string
 
 func main() {
