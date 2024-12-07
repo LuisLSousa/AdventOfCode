@@ -111,12 +111,17 @@ func traverseBoard(b board, c coordinates) int {
 	// ------------
 
 	for {
-		s := newCoordinates
+		s := newCoordinates // part 2
+
 		// up
 		newCount, newCoordinates = traverseUp(b, newCoordinates)
 		count += newCount
 
-		f := newCoordinates
+		f := newCoordinates // part 2
+
+		if isOut(b, newCoordinates) {
+			return count
+		}
 
 		// ----- Part 2
 		if _, ok := visited[path{s.x, s.y, f.x, f.y}]; ok {
@@ -124,10 +129,6 @@ func traverseBoard(b board, c coordinates) int {
 		}
 		visited[path{s.x, s.y, f.x, f.y}] = struct{}{}
 		// ------------
-
-		if isOut(b, newCoordinates) {
-			return count
-		}
 
 		// right
 		newCount, newCoordinates = traverseRight(b, newCoordinates)
